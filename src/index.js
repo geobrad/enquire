@@ -10,13 +10,18 @@ function isString(x) {
 
 function validateRecaptchaResponse(recaptchaResponse) {
     // return Promise.resolve(true);
+    const requestData = {
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: recaptchaResponse,
+    };
+    const options = {
+        host: 'www.google.com',
+        path: '/recaptcha/api/siteverify',
+        method: 'POST',
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    };
+
     return new Promise((resolve, reject) => {
-        const options = {
-            host: 'www.google.com',
-            path: '/recaptcha/api/siteverify',
-            method: 'POST',
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        };
         const reqStream = https.request(options, (resStream) => {
             let resRaw = '';
             resStream.on('data', chunk => {
@@ -43,10 +48,8 @@ function validateRecaptchaResponse(recaptchaResponse) {
             console.log(err.message);
             reject(500);
         });
-        reqStream.write(querystring.stringify({
-            secret: process.env.RECAPTCHA_SECRET_KEY,
-            response: recaptchaResponse,
-        }));
+        console.log(requestData);
+        reqStream.write(querystring.stringify(requestData));
         reqStream.end();
     });
 }
