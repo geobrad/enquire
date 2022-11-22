@@ -62,7 +62,7 @@ function validateFormData(data) {
 function sendMail(subject, text) {
     console.log('Sending email . . .');
     const params = {
-        Source: proFROM_EMAIL,
+        Source: process.env.FROM_EMAIL,
         Destination: {
             ToAddresses: [process.env.TO_EMAIL],
         },
